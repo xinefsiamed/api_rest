@@ -57,9 +57,15 @@ export default class User extends Model {
     });
 
     this.addHook('beforeSave', async (user) => {
-      user.password_hash = await bcryptjs.hash(user.password, 8); // eslint-disable-line
+      if (user.password) {
+        user.password_hash = await bcryptjs.hash(user.password, 8); // eslint-disable-line
+      }
     });
 
     return this;
+  }
+
+  passwordIsValid(password) {
+    return bcryptjs.compare(password, this.password_hash);
   }
 }
